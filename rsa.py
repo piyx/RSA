@@ -40,6 +40,8 @@ def random_prime(lo: int, hi: int) -> int:
         11
 
     '''
+    n = random.randint(lo, hi)
+    
     while not isprime(n):
         n = random.randint(lo, hi)
     
@@ -47,8 +49,18 @@ def random_prime(lo: int, hi: int) -> int:
 
 
 def generate_prime_pair(lo: int, hi: int) -> tuple[int, int]:
+    '''Generates 2 non equal prime numbers in the range [lo, hi]
+
+    Example:
+        >>> generate_prime_pair(100, 200) 
+        (173, 113)
+        >>> generate_prime_pair(1000, 2000) 
+        (1451, 1997)
+    
+    '''
     p = random_prime(lo, hi)
     q = random_prime(lo, hi)
+    
     while q == p:
         q = random_prime(lo, hi)
 
