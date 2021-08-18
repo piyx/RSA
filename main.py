@@ -78,10 +78,10 @@ def main():
         '3': decrypt_file_questions,
         '4': sys.exit
     }
+    
     while True:
         # Fetch the user's choice
         choice = prompt(choices)['choice'][0]
-
         # Call the function associated with the choice
         mapping[choice]()
 
