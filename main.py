@@ -58,33 +58,33 @@ def decrypt_file_questions():
 
 
 def main():
-    while True:
-        choices = [
-            {
-                'type': 'list',
-                'name': 'choice',
-                'message': 'What do you want to do?',
-                'choices': [
-                    '1.Generate keys',
-                    '2.Encrypt file',
-                    '3.Decrypt file',
-                    '4.Exit'
-                ],
-            }
-        ]
-    
-        # Map functions to the apprpriate choice
-        mapping = {
-            '1': generate_keys,
-            '2': encrypt_file_questions,
-            '3': decrypt_file_questions,
-            '4': sys.exit
+    choices = [
+        {
+            'type': 'list',
+            'name': 'choice',
+            'message': 'What do you want to do?',
+            'choices': [
+                '1.Generate keys',
+                '2.Encrypt file',
+                '3.Decrypt file',
+                '4.Exit'
+            ],
         }
+    ]
 
+    mapping = {
+        '1': generate_keys,
+        '2': encrypt_file_questions,
+        '3': decrypt_file_questions,
+        '4': sys.exit
+    }
+    while True:
+        # Fetch the user's choice
         choice = prompt(choices)['choice'][0]
 
-        # Call the function
+        # Call the function associated with the choice
         mapping[choice]()
+
 
 if __name__=="__main__":
     main()
