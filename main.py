@@ -2,12 +2,16 @@ import os
 import sys
 
 from PyInquirer import prompt
-from rsa import RSA, encrypt, decrypt
+from rsa import RSA
+from huffman import HuffmanEncoding
+
+
+huff = HuffmanEncoding()
 
 
 def generate_keys():
-    rsa = RSA()
-    print(f"Public Key: {rsa.publickey} Private Key: {rsa.privatekey}")
+    publickey, privatekey = RSA.generatekeys()
+    print(f"Public Key: {publickey} Private Key: {privatekey}")
 
 
 def encrypt_file_questions():
@@ -30,7 +34,7 @@ def encrypt_file_questions():
 
     filename = answers['filename']
     publickey = eval(answers['publickey'])
-    encrypt(filename, publickey)
+    RSA.encrypt(filename, publickey)
     print(f"{filename} has been encrypted!")
 
 
@@ -53,8 +57,40 @@ def decrypt_file_questions():
 
     filename = answers['filename']
     privatekey = eval(answers['privatekey'])
-    decrypt(filename, privatekey)
+    RSA.decrypt(filename, privatekey)
     print(f"{filename} has been decrypted!")
+
+
+def compress_file_questions():
+    questions = [
+        {
+            'type': 'input',
+            'name': 'filename',
+            'message': 'Enter the path of the file to be compressed',
+            'validate': lambda filepath: os.path.exists(filepath) or 'The file does not exist!'
+        }
+    ]
+    answers = prompt(questions)
+
+    filename = answers['filename']
+    huff.compress(filename)
+    print(f"{filename} has been compressed!")
+
+
+def decompress_file_questions():
+    questions = [
+        {
+            'type': 'input',
+            'name': 'filename',
+            'message': 'Enter the path of the file to be decompressed',
+            'validate': lambda filepath: os.path.exists(filepath) or 'The file does not exist!'
+        }
+    ]
+    answers = prompt(questions)
+
+    filename = answers['filename']
+    huff.decompress(filename, "encoding.json")
+    print(f"{filename} has been decompressed!")
 
 
 def main():
@@ -67,7 +103,9 @@ def main():
                 '1.Generate keys',
                 '2.Encrypt file',
                 '3.Decrypt file',
-                '4.Exit'
+                '4.Compress file',
+                '5.Decompress file',
+                '6.Exit'
             ],
         }
     ]
@@ -76,7 +114,9 @@ def main():
         '1': generate_keys,
         '2': encrypt_file_questions,
         '3': decrypt_file_questions,
-        '4': sys.exit
+        '4': compress_file_questions,
+        '5': decompress_file_questions,
+        '6': sys.exit
     }
     
     while True:
