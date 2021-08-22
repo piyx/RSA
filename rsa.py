@@ -2,6 +2,7 @@ from math import sqrt
 import os
 import random
 
+
 LOWER_LIMIT = 10**5
 UPPER_LIMIT = 10**7
 
@@ -83,48 +84,6 @@ def gcd(n: int, m: int) -> int:
     return n
 
 
-def encrypt(filename: str, publickey: tuple[int, int]) -> None:
-    '''Encrypts the contents of the file using the public key'''
-
-    if not os.path.exists(filename):
-        raise FileNotFoundError(f"{filename} not found")
-
-    e, n = publickey
-    
-    # Consumes the whole content and stores in memory
-    # Not ideal for large files
-    with open(filename) as f:
-        contents = f.read()
-    
-    encrypted_data = []
-    with open(filename, 'w') as f:
-        for char in contents:
-            encrypted_char = pow(ord(char), e, n)
-            encrypted_data.append(encrypted_char)
-        
-        f.write(' '.join(map(str, encrypted_data)))
-    
-    
-def decrypt(filename: str, privatekey: tuple[int, int]) -> None:
-    '''Decrypts the contents of the file using the private key'''
-    
-    if not os.path.exists(filename):
-        raise FileNotFoundError(f"{filename} not found")
-
-    d, n = privatekey
-
-    with open(filename) as f:
-        encrypted_contents = f.read().split()
-    
-    decrypted_data = []
-    with open(filename, 'w') as f:
-        for num in map(int, encrypted_contents):
-            decrypted_char = chr(pow(num, d, n))
-            decrypted_data.append(decrypted_char)
-        
-        f.write(''.join(map(str, decrypted_data)))
-
-
 class RSA:
     '''
     Properties
@@ -141,27 +100,60 @@ class RSA:
     => 1 < e < phi and gcd(e, phi) = 1 // e and phi are coprime
     => de = 1 mod phi (or) d = e^-1 mod phi 
     '''
-
-
-    def __init__(self):
-        self.p, self.q = generate_prime_pair(LOWER_LIMIT, UPPER_LIMIT)
-        self.n = self.p * self.q
-        self.phi = (self.p-1) * (self.q-1)
-        self.e = random.randrange(1, self.phi)
-        while gcd(self.e, self.phi) != 1:
-            self.e = random.randrange(1, self.phi)
+    @staticmethod
+    def generatekeys() -> tuple[tuple]:
+        '''Returns a key pair (Public key and Private key)'''
+        p, q = generate_prime_pair(LOWER_LIMIT, UPPER_LIMIT)
+        n = p*q
+        phi = (p-1) * (q-1)
+        e = random.randrange(1, phi)
+        while gcd(e, phi) != 1:
+            e = random.randrange(1, phi)
         
-        self.d = pow(self.e, -1, self.phi)
+        d = pow(e, -1, phi)
+
+        return ((e, n), (d, n))
+
     
-    @property
-    def publickey(self):
-        '''Public key consists of the pair (e, n)'''
-        return (self.e, self.n)
+    @staticmethod
+    def encrypt(filename: str, publickey: tuple[int, int]) -> None:
+        '''Encrypts the contents of the file using the public key'''
+
+        if not os.path.exists(filename):
+            raise FileNotFoundError(f"{filename} not found")
+
+        e, n = publickey
+        
+        # Consumes the whole content and stores in memory
+        # Not ideal for large files
+        with open(filename) as f:
+            contents = f.read()
+        
+        encrypted_data = []
+        with open(filename, 'w') as f:
+            for char in contents:
+                encrypted_char = pow(ord(char), e, n)
+                encrypted_data.append(encrypted_char)
+            
+            f.write(' '.join(map(str, encrypted_data)))
+
+
+    @staticmethod
+    def decrypt(filename: str, privatekey: tuple[int, int]) -> None:
+        '''Decrypts the contents of the file using the private key'''
     
-    @property
-    def privatekey(self):
-        '''Private key consists of the pair (d, n)'''
-        return (self.d, self.n)
-    
-    def __str__(self):
-        return f'(p={self.p}, q={self.q}, n={self.n}, phi={self.phi}, e={self.e}, d={self.d})'
+        if not os.path.exists(filename):
+            raise FileNotFoundError(f"{filename} not found")
+
+        d, n = privatekey
+
+        with open(filename) as f:
+            encrypted_contents = f.read().split()
+        
+        decrypted_data = []
+        with open(filename, 'w') as f:
+            for num in map(int, encrypted_contents):
+                decrypted_char = chr(pow(num, d, n))
+                decrypted_data.append(decrypted_char)
+            
+            f.write(''.join(map(str, decrypted_data)))
