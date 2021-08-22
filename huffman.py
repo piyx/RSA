@@ -28,7 +28,7 @@ def chunks(sequence, chunksize):
 
 
 
-class HuffmanEncoding:
+class HuffmanCoding:
     def __init__(self):
         pass
     
@@ -132,7 +132,7 @@ class HuffmanEncoding:
 
 
 def main():
-    huffman = HuffmanEncoding()
+    huffman = HuffmanCoding()
     huffman.compress("test.txt")
     huffman.decompress("test.bin", "encoding.json")
 

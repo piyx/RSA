@@ -3,10 +3,10 @@ import sys
 
 from PyInquirer import prompt
 from rsa import RSA
-from huffman import HuffmanEncoding
+from huffman import HuffmanCoding
 
 
-huff = HuffmanEncoding()
+huff = HuffmanCoding()
 
 
 def generate_keys():
