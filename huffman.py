@@ -18,7 +18,7 @@ class HeapNode:
         return self.freq > other.freq
     
     def __eq__(self, other):
-        return self.freq > other.freq
+        return self.freq = other.freq
 
 
 def chunks(sequence, chunksize):
